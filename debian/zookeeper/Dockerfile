@@ -35,13 +35,14 @@ RUN echo "===> installing ${COMPONENT}..." \
     \
     && echo "===> Setting up ${COMPONENT} dirs" \
     && mkdir -p /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets \
-    && chmod -R ag+w /etc/kafka /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets \
-    && chown -R cp-kafka:confluent  /etc/kafka /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets /var/log/kafka
+    && chgrp -R 0 /etc/kafka /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets /var/log/kafka /etc/passwd \
+    && chmod -R g=u /etc/kafka /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets \
+    && chmod -R g=u /etc/passwd
 
 VOLUME ["/var/lib/${COMPONENT}/data", "/var/lib/${COMPONENT}/log", "/etc/${COMPONENT}/secrets"]
 
-COPY --chown=cp-kafka:confluent include/etc/confluent/docker /etc/confluent/docker
+COPY include/etc/confluent/docker /etc/confluent/docker
 
-USER cp-kafka
+RUN chmod -R u+x /etc/confluent/docker
 
 CMD ["/etc/confluent/docker/run"]

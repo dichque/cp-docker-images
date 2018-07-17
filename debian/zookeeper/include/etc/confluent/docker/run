@@ -19,6 +19,9 @@ set -o nounset \
     -o verbose \
     -o xtrace
 
+echo "===> Updating passwd for uid managament"
+/etc/confluent/docker/uid_entrypoint
+
 echo "===> ENV Variables ..."
 env | sort
 

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Required to meet default security policy restrictions on openshift
+# Reference:
+# https://docs.openshift.com/container-platform/3.9/creating_images/guidelines.html#openshift-specific-guidelines
+# http://www.johnzaccone.io/entrypoint-vs-cmd-back-to-basics/
+
+if ! whoami &> /dev/null; then
+  if [ -w /etc/passwd ]; then
+    echo "${USER_NAME:-zookeeper}:x:$(id -u):0:${USER_NAME:-zookeeper} user:${HOME}:/sbin/nologin" >> /etc/passwd
+  fi
+fi

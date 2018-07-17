@@ -36,20 +36,18 @@ EXPOSE 9092
 
 RUN echo "===> installing ${COMPONENT}..." \
     && apt-get update && apt-get install -y confluent-kafka-${SCALA_VERSION}=${KAFKA_VERSION}${CONFLUENT_PLATFORM_LABEL}-${CONFLUENT_DEB_VERSION} \
-    \
     && echo "===> clean up ..."  \
     && apt-get clean && rm -rf /tmp/* /var/lib/apt/lists/* \
-    \
 		&& echo "===> Setting up ${COMPONENT} dirs..." \
    	&& mkdir -p /var/lib/${COMPONENT}/data /etc/${COMPONENT}/secrets\
-   	&& chmod -R ag+w /etc/${COMPONENT} /var/lib/${COMPONENT}/data /etc/${COMPONENT}/secrets \
-    && chown -R cp-kafka:confluent  /etc/${COMPONENT} /var/lib/${COMPONENT}/data /etc/${COMPONENT}/secrets /var/log/kafka
-
+    && chgrp -R 0 /etc/${COMPONENT} /var/lib/${COMPONENT} /etc/${COMPONENT}/secrets /var/log/kafka \
+    && chmod -R g=u /etc/${COMPONENT} /var/lib/${COMPONENT} /etc/${COMPONENT}/secrets /var/log/kafka \
+    && chmod -R g=u /etc/passwd
 
 VOLUME ["/var/lib/${COMPONENT}/data", "/etc/${COMPONENT}/secrets"]
 
-COPY --chown=cp-kafka:confluent include/etc/confluent/docker /etc/confluent/docker
+COPY  include/etc/confluent/docker /etc/confluent/docker
 
-USER cp-kafka
+RUN chmod -R +x /etc/confluent/docker
 
 CMD ["/etc/confluent/docker/run"]
