@@ -35,8 +35,8 @@ RUN echo "===> installing ${COMPONENT}..." \
     \
     && echo "===> Setting up ${COMPONENT} dirs" \
     && mkdir -p /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets \
-    && chgrp -R 0 /etc/kafka /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets /var/log/kafka /etc/passwd \
-    && chmod -R g=u /etc/kafka /var/lib/${COMPONENT}/data /var/lib/${COMPONENT}/log /etc/${COMPONENT}/secrets \
+    && chgrp -R 0 /etc/kafka /var/lib/${COMPONENT} /etc/${COMPONENT}/secrets /var/log/kafka /etc/passwd \
+    && chmod -R g=u /etc/kafka /var/lib/${COMPONENT} /etc/${COMPONENT}/secrets \
     && chmod -R g=u /etc/passwd
 
 VOLUME ["/var/lib/${COMPONENT}/data", "/var/lib/${COMPONENT}/log", "/etc/${COMPONENT}/secrets"]
